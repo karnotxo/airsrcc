@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: grpc-client
+  main:    web-application-type: NONE
+        
+server:  port: 8080     
+  
+grpc:
+  client:
+    local-grpc-server:
+      host: 127.0.0.1
+      port: 9898
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

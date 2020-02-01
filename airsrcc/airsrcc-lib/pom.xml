@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>airsrcc-lib</artifactId>
+	<packaging>jar</packaging>
+	<name>AirSRCC-Lib</name>
+
+	<parent>
+		<groupId>com.indra.srcc</groupId>
+		<artifactId>airsrcc</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<os.plugin.version>1.6.2</os.plugin.version>
+		<grpc.version>1.25.0</grpc.version>
+		<protoc.version>3.6.1</protoc.version>
+		<protobuf.plugin.version>0.6.1</protobuf.plugin.version>
+	</properties>
+
+	<dependencies>
+		<!-- From standard library Java9 -->
+		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-all</artifactId>
+			<version>${grpc.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<extensions>
+			<extension>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>${os.plugin.version}</version>
+			</extension>
+		</extensions>
+		<plugins>
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>${protobuf.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<protocArtifact>com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+					<pluginId>grpc-java</pluginId>
+					<pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+					<!--Defaults -->
+					<protoSourceRoot>${project.basedir}/src/main/resources/proto</protoSourceRoot>
+					<!--Defaults -->
+					<!--<outputDirectory>${project.build.directory}/generated-sources/protobuf/java</outputDirectory> -->
+					<outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+					<!-- Set whether to clear the outputDirectory file before generating 
+						the java file. The default value is true. Setting it to false will also overwrite 
+						the file with the same name -->
+					<clearOutputDirectory>false</clearOutputDirectory>
+					<!--More configuration information can be viewed https://www.xolstice.org/protobuf-maven-plugin/compile-mojo.html -->
+				</configuration>
+				<executions>
+					<execution>
+						<!-- When executing mvn compile, the following operations are performed -->
+						<phase>compile</phase>
+						<goals>
+							<!-- Generate OuterClass class -->
+							<goal>compile</goal>
+							<!-- Generate Grpc class -->
+							<goal>compile-custom</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<classifier>exec</classifier>
+				</configuration>
+			</plugin-->
+		</plugins>
+	</build>
+
+</project>
