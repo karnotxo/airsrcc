@@ -2,18 +2,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<artifactId>airsrcc-client</artifactId>
 	<packaging>jar</packaging>
 	<name>AirSRCC-Client</name>
 	<parent>
 		<groupId>com.indra.srcc</groupId>
 		<artifactId>airsrcc</artifactId>
-		<version>0.0.1-SNAPSHOT</version>	</parent>	
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
 	<properties>
 	</properties>
-	
+
 	<repositories>
 		<repository>
 			<id>nuiton-maven-repository</id>
@@ -65,8 +66,14 @@
 
 		<dependency>
 			<groupId>xyz.cofe</groupId>
-			<artifactId>docking-frames-core-j6</artifactId>
+			<artifactId>docking-frames-common</artifactId>
 			<version>1.1.2p20b.fix-1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>de.sciss</groupId>
+			<artifactId>treetable-java</artifactId>
+			<version>1.5.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.bbn/openmap -->
@@ -122,8 +129,7 @@
 
 		</plugins>
 	</build>
-	
-	<!-- dependencyManagement>
-	</dependencyManagement-->
-	
+
+	<!-- dependencyManagement> </dependencyManagement -->
+
 </project>

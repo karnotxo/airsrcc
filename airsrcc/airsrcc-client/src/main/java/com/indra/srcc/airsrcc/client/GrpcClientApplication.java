@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.indra.srcc.airsrcc.client.ui.AppPrincipalFrame;
+import com.indra.srcc.airsrcc.client.ui.SwingClientGuiStub;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,8 +18,8 @@ public class GrpcClientApplication implements CommandLineRunner {
 		
 		ConfigurableApplicationContext context = new SpringApplicationBuilder(GrpcClientApplication.class).headless(false).run(args);
 		System.setProperty("java.awt.headless", "false"); //Disables headless
-	    AppPrincipalFrame appFrame = context.getBean(AppPrincipalFrame.class);
-	    appFrame.setVisible(true);
+		SwingClientGuiStub guiStub = context.getBean(SwingClientGuiStub.class);
+	    guiStub.launchGUI();
 	}
 
 	@Override
