@@ -10,7 +10,7 @@ import io.grpc.StatusRuntimeException;
 @Service
 public class GrpcClientService {
 
-	@GrpcClient("local-grpc-server")
+	@GrpcClient("grpc-server")
 	private Channel serverChannel;
 
 	public String sendMessage(String name) {

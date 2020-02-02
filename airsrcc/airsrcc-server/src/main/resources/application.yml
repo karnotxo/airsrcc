@@ -1,6 +1,6 @@
 spring:
   application:
-    name: local-grpc-server
+    name: grpc-server
     
 server:
   port: 0
