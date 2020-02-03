@@ -1,11 +1,19 @@
 package com.indra.srcc.airsrcc.client.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,13 +37,29 @@ import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.indra.srcc.airsrcc.client.control.SwingClientController;
 
+import bibliothek.extension.gui.dock.theme.EclipseTheme;
+import bibliothek.extension.gui.dock.theme.eclipse.stack.tab.RectGradientPainter;
+import bibliothek.gui.DockController;
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.CLocation;
+import bibliothek.gui.dock.common.ColorMap;
+import bibliothek.gui.dock.common.DefaultMultipleCDockable;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
+import bibliothek.gui.dock.common.EmptyMultipleCDockableFactory;
+import bibliothek.gui.dock.common.MultipleCDockableFactory;
 import bibliothek.gui.dock.common.SingleCDockable;
+import bibliothek.gui.dock.common.grouping.PlaceholderGrouping;
+import bibliothek.gui.dock.common.intern.AbstractCDockable;
 import bibliothek.gui.dock.common.location.CContentAreaCenterLocation;
 import bibliothek.gui.dock.common.location.TreeLocationRoot;
+import bibliothek.gui.dock.common.perspective.CGridPerspective;
+import bibliothek.gui.dock.common.perspective.CPerspective;
 import bibliothek.gui.dock.common.theme.ThemeMap;
+import bibliothek.gui.dock.themes.color.TitleColor;
+import bibliothek.gui.dock.util.Priority;
+import bibliothek.gui.dock.util.color.ColorManager;
+import bibliothek.util.Colors;
+import bibliothek.util.Path;
 import de.sciss.treetable.j.TreeTable;
 import lombok.extern.slf4j.Slf4j;
 
@@ -122,11 +146,13 @@ public class SwingClientGuiStub {
 
 		this.rootframe.setJMenuBar(menuBar);
 
-		CControl control = new CControl(this.rootframe);
+		CControl control = new CControl(this.rootframe);	
+		
+		
 		this.rootframe.setLayout(new BorderLayout());
 		this.rootframe.add(control.getContentArea(), BorderLayout.CENTER);
-		control.setTheme(ThemeMap.KEY_FLAT_THEME);
-
+		//control.setTheme(ThemeMap.KEY_FLAT_THEME);
+		
 		this.displayTree = createDisplayTree();
 		this.messageLog = createMessageLog();
 		this.alertsDisplay = createAlertsDisplay();
@@ -135,56 +161,114 @@ public class SwingClientGuiStub {
 		// IMPORTANT: CruiseControl must be the last one to be in front of the others!
 		this.ppimap = createPPIMap();
 
-		SingleCDockable displaytreedock = new DefaultSingleCDockable("displayTree", "Display Tree",
+		DefaultSingleCDockable displaytreedock = new DefaultSingleCDockable("displayTree", "Display Tree",
 				new JScrollPane(this.displayTree));
-		SingleCDockable messagelogdock = new DefaultSingleCDockable("messageLog", "Message Log",
+		DefaultSingleCDockable messagelogdock = new DefaultSingleCDockable("messageLog", "Message Log",
 				new JScrollPane(this.messageLog));
-		SingleCDockable alertsdisplaydock = new DefaultSingleCDockable("alertsdisplay", "Alerts Display",
+		DefaultSingleCDockable alertsdisplaydock = new DefaultSingleCDockable("alertsdisplay", "Alerts Display",
 				new JScrollPane(this.alertsDisplay));
-		SingleCDockable siteselectiontabledock = new DefaultSingleCDockable("siteselectiontable", "Site Selection",
+		DefaultSingleCDockable siteselectiontabledock = new DefaultSingleCDockable("siteselectiontable", "Site Selection",
 				new JScrollPane(this.sitesSelectionTable));
-		SingleCDockable sitecontrolformdock = new DefaultSingleCDockable("sitecontrolform", "Control",
+		DefaultSingleCDockable sitecontrolformdock = new DefaultSingleCDockable("sitecontrolform", "Control",
 				new JScrollPane(this.siteControlForm));
-		SingleCDockable ppimapdock = new DefaultSingleCDockable("ppimap", "Map View", new JScrollPane(this.ppimap));
+		DefaultSingleCDockable ppimapdock = new DefaultSingleCDockable("ppimap", "Map View", this.ppimap);
 
+		    
+
+		
+		DockController controller = control.intern().getController();
+		controller.setTheme(new EclipseTheme());
+		controller.getProperties().set(EclipseTheme.TAB_PAINTER, RectGradientPainter.FACTORY);
+
+		initMap();
+
+		
+		/* After setting up the JComponents, we mark some locations with placeholders. */
+		initialLayout( control );
+		
+		/* We define the group of "dockable". It will now show up at the location where "placeholder" was inserted into the layout,
+		 * or at the location of other dockables that have the same group. */ 
+		ppimapdock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "ppi" ) ) );
+		ppimapdock.setCloseable( false );
+		
+		//CContentAreaCenterLocation normal = CLocation.base().normal();
+		//ppimapdock.setLocation(normal);
+		//ppimapdock.setSticky(false);
+		
+		//TreeLocationRoot south = CLocation.base().normalSouth(0.4);
+
+		//alertsdisplaydock.setLocation(south);
+		//messagelogdock.setLocation(south.stack());
+		alertsdisplaydock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "messaging" ) ) );
+		alertsdisplaydock.setCloseable( false );
+		messagelogdock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "messaging" ) ) );
+		messagelogdock.setCloseable( false );
+
+		//TreeLocationRoot west = CLocation.base().normalWest(0.4);
+
+		//displaytreedock.setLocation(west);
+		displaytreedock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "filtering" ) ) );
+		displaytreedock.setCloseable( false );
+
+		//TreeLocationRoot east = CLocation.base().normalEast(0.4);
+
+		//siteselectiontabledock.setLocation(east);
+		//sitecontrolformdock.setLocation(east.stack());
+		siteselectiontabledock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "detail" ) ) );
+		siteselectiontabledock.setCloseable( false );
+		sitecontrolformdock.setGrouping( new PlaceholderGrouping( control, new Path( "workspace", "detail" ) ) );
+		sitecontrolformdock.setCloseable( false );		
+		
 		control.addDockable(displaytreedock);
 		control.addDockable(messagelogdock);
 		control.addDockable(alertsdisplaydock);
 		control.addDockable(siteselectiontabledock);
 		control.addDockable(sitecontrolformdock);
 		control.addDockable(ppimapdock);
-
-		CContentAreaCenterLocation normal = CLocation.base().normal();
-
-		ppimapdock.setLocation(normal);
-
-		TreeLocationRoot south = CLocation.base().normalSouth(0.4);
-
-		alertsdisplaydock.setLocation(south);
-		messagelogdock.setLocation(south.stack());
-
-		TreeLocationRoot west = CLocation.base().normalWest(0.4);
-
-		displaytreedock.setLocation(west);
-
-		TreeLocationRoot east = CLocation.base().normalEast(0.4);
-
-		siteselectiontabledock.setLocation(east);
-		sitecontrolformdock.setLocation(east.stack());
-
+		
 		displaytreedock.setVisible(true);
 		messagelogdock.setVisible(true);
 		alertsdisplaydock.setVisible(true);
 		siteselectiontabledock.setVisible(true);
+		sitecontrolformdock.setVisible(true);
 		ppimapdock.setVisible(true);
-		
-		initMap();
 
 		this.rootframe.pack();
 		this.rootframe.setBounds(50, 50, 1000, 700);// TODO: get better size calcs
 		this.rootframe.setVisible(true);
 	}
 
+	
+	private static void initialLayout( CControl control ){
+		CPerspective layout = control.getPerspectives().createEmptyPerspective();
+		
+		/* Adding a placeholder called "workspace.detail" to the right "minimized area" of the frame */
+		layout.getContentArea().getEast().addPlaceholder( new Path( "workspace", "detail" ));
+		
+		/* One of the many locations of the "external area" is associated with a placeholder. */
+		layout.getScreenStation().addPlaceholder( new Path( "workspace", "detail" ), 80, 80, 500, 200 );
+		
+		
+		/* Adding a placeholder called "workspace.messaging" to the bottom "minimized area" of the frame */
+		layout.getContentArea().getSouth().addPlaceholder( new Path( "workspace", "messaging" ));
+		
+		/* One of the many locations of the "external area" is associated with a placeholder. */
+		layout.getScreenStation().addPlaceholder( new Path( "workspace", "messaging" ), 200, 200, 600, 100 );
+		
+		
+		/* Building a grid (3 rows, 2 columns) of placeholder. */
+		CGridPerspective center = layout.getContentArea().getCenter();
+		center.gridPlaceholder( 2, 0, 1, 1, new Path( "workspace", "detail" ));
+		center.gridPlaceholder( 0, 1, 3, 1, new Path( "workspace", "messaging" ));
+		center.gridPlaceholder( 0, 0, 1, 1, new Path( "workspace", "filtering" ));
+		center.gridPlaceholder( 1, 0, 1, 1, new Path( "workspace", "ppi" ));
+		
+		/* Finally we tell the CControl that the perspective we just set up should be displayed. */
+		control.getPerspectives().setPerspective( layout, true );
+	}	
+
+	
+	
 	private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_exitMenuItemActionPerformed
 		System.exit(0);
 	}
@@ -251,7 +335,7 @@ public class SwingClientGuiStub {
 			});
 
 			// Add the map to the frame
-			//mapHandler.add(this.rootframe);
+			// mapHandler.add(this.rootframe);
 		} catch (MultipleSoloMapComponentException msmce) {
 			// The MapHandler is only allowed to have one of certain
 			// items. These items implement the SoloMapComponent
@@ -264,15 +348,14 @@ public class SwingClientGuiStub {
 			// MouseDelegator, etc is being added to the MapHandler.
 		}
 	}
-	
+
 	private ShapeLayer getShapeLayer() {
 		PropertyHandler propertyHandler = null;
 		final Properties p = new Properties();
 		try {
-			p.load(new StringReader("shapePolitical.prettyName=Political Solid\n"
-					+ "shapePolitical.lineColor=000000\n" + "shapePolitical.fillColor=BDDE83\n"
-					+ "shapePolitical.shapeFile=map/shape/europe.shp\n"));
-					//+ "shapePolitical.spatialIndex=map/shape/europe.prj\n"));
+			p.load(new StringReader("shapePolitical.prettyName=Political Solid\n" + "shapePolitical.lineColor=000000\n"
+					+ "shapePolitical.fillColor=BDDE83\n" + "shapePolitical.shapeFile=map/shape/europe.shp\n"));
+			// + "shapePolitical.spatialIndex=map/shape/europe.prj\n"));
 			propertyHandler = new PropertyHandler.Builder().setProperties(p).setPropertyPrefix("shapePolitical")
 					.build();
 		} catch (IOException ex) {
