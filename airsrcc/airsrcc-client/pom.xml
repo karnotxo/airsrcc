@@ -64,9 +64,29 @@
 			<version>2.0.2</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-transcoder</artifactId>
+			<version>1.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-codec</artifactId>
+			<version>1.12</version>
+		</dependency>
+
 		<dependency>
 			<groupId>xyz.cofe</groupId>
 			<artifactId>docking-frames-common</artifactId>
+			<version>1.1.2p20b.fix-1</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.dockingframes/docking-frames-ext-toolbar -->
+		<dependency>
+			<groupId>xyz.cofe</groupId>
+			<artifactId>docking-frames-ext-toolbar</artifactId>
 			<version>1.1.2p20b.fix-1</version>
 		</dependency>
 
