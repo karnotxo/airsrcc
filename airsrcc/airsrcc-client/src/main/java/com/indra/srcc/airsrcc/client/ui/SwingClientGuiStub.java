@@ -2,17 +2,21 @@ package com.indra.srcc.airsrcc.client.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JToolBar;
 import javax.swing.JTree;
 
 import org.apache.batik.transcoder.TranscoderException;
@@ -29,22 +33,14 @@ import com.bbn.openmap.gui.BasicMapPanel;
 import com.bbn.openmap.layer.GraticuleLayer;
 import com.bbn.openmap.layer.shape.ShapeLayer;
 import com.bbn.openmap.proj.coords.LatLonPoint;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.indra.srcc.airsrcc.client.control.SwingClientController;
 import com.indra.srcc.airsrcc.client.util.IconTool;
 
-import bibliothek.extension.gui.dock.theme.EclipseTheme;
-import bibliothek.extension.gui.dock.theme.eclipse.stack.tab.RectGradientPainter;
-import bibliothek.gui.DockController;
-import bibliothek.gui.DockTheme;
-import bibliothek.gui.Dockable;
-import bibliothek.gui.Orientation;
-import bibliothek.gui.dock.ExpandableToolbarItemStrategy;
-import bibliothek.gui.dock.ScreenDockStation;
-import bibliothek.gui.dock.ToolbarContainerDockStation;
-import bibliothek.gui.dock.ToolbarDockStation;
-import bibliothek.gui.dock.ToolbarGroupDockStation;
-import bibliothek.gui.dock.ToolbarItemDockable;
-import bibliothek.gui.dock.action.actions.SimpleButtonAction;
+import bibliothek.extension.gui.dock.theme.FlatTheme;
+import bibliothek.extension.gui.dock.theme.flat.FlatColorScheme;
+import bibliothek.gui.DockUI;
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.grouping.PlaceholderGrouping;
@@ -52,12 +48,12 @@ import bibliothek.gui.dock.common.perspective.CGridPerspective;
 import bibliothek.gui.dock.common.perspective.CPerspective;
 import bibliothek.gui.dock.common.theme.ThemeMap;
 import bibliothek.gui.dock.facile.lookandfeel.DockableCollector;
-import bibliothek.gui.dock.station.toolbar.group.ToolbarGroupProperty;
 import bibliothek.gui.dock.support.lookandfeel.ComponentCollector;
 import bibliothek.gui.dock.support.lookandfeel.LookAndFeelList;
-import bibliothek.gui.dock.themes.basic.BasicSpanFactory;
-import bibliothek.gui.dock.toolbar.expand.DefaultExpandableToolbarItemStrategy;
-import bibliothek.gui.dock.toolbar.expand.ExpandedState;
+import bibliothek.gui.dock.themes.ColorScheme;
+import bibliothek.gui.dock.themes.color.DefaultColorScheme;
+import bibliothek.gui.dock.util.laf.LookAndFeelColors;
+import bibliothek.util.Colors;
 import bibliothek.util.Path;
 import de.sciss.treetable.j.TreeTable;
 import lombok.extern.slf4j.Slf4j;
@@ -96,6 +92,8 @@ public class SwingClientGuiStub {
 	}
 
 	public void launchGUI() {
+		
+		FlatDarkLaf.install();
 
 		this.rootframe = new JFrame("AirSRCC");
 		this.rootframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,12 +149,79 @@ public class SwingClientGuiStub {
 		dockingFramesControl = new CControl(this.rootframe);
 
 		// final DockController controller = new DockController();
-		final DockController controller = dockingFramesControl.intern().getController();
+		//final DockController controller = dockingFramesControl.intern().getController();
 
 		// controller.getProperties().set( DockTheme.SPAN_FACTORY, new BasicSpanFactory(
 		// 500, 250 ) );
-		controller.setTheme(new EclipseTheme());
-		controller.getProperties().set(EclipseTheme.TAB_PAINTER, RectGradientPainter.FACTORY);
+		dockingFramesControl.setTheme(ThemeMap.KEY_FLAT_THEME);
+		ColorScheme colors = new FlatColorScheme() {
+		    @Override
+		    protected void updateUI(){
+		        setColor( "title.active.left", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ));
+		        setColor( "title.inactive.left", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
+		        setColor( "title.active.right", DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND ) );
+		        setColor( "title.inactive.right", DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND ) );
+		        setColor( "title.active.text", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_FOREGROUND ) );
+		        setColor( "title.inactive.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
+		        
+		        setColor( "title.flap.active", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) );
+		        setColor( "title.flap.active.text", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_FOREGROUND ) );
+		        setColor( "title.flap.active.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) ) );
+				setColor( "title.flap.active.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) ) );
+		        setColor( "title.flap.inactive", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
+		        setColor( "title.flap.inactive.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
+		        setColor( "title.flap.inactive.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
+				setColor( "title.flap.inactive.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
+		        setColor( "title.flap.selected", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
+		        setColor( "title.flap.selected.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
+		        setColor( "title.flap.selected.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
+				setColor( "title.flap.selected.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
+				
+		        setColor( "paint", Color.DARK_GRAY );
+		        setColor( "paint.insertion.area", Color.WHITE );
+		        setColor( "paint.removal", Color.GRAY );
+		        
+		        Color border = DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND );
+		        setColor( "stack.tab.border.center.selected", Colors.brighter( border ) );
+		        setColor( "stack.tab.border.center.focused", Colors.brighter( border ) );
+		        setColor( "stack.tab.border.center.disabled", Colors.brighter( border ) );
+		        setColor( "stack.tab.border.center", Colors.darker( border ) );
+		        setColor( "stack.tab.border", border );
+		                        
+		        setColor( "stack.tab.background.top.selected", Colors.diffMirror( border, 0.2 ) );
+		        setColor( "stack.tab.background.top.focused", Colors.diffMirror( border, 0.2 ) );
+		        setColor( "stack.tab.background.top.disabled", Colors.diffMirror( border, 0.1 ) );
+		        setColor( "stack.tab.background.top", border );
+		        setColor( "stack.tab.background.bottom.selected", Colors.diffMirror( border, 0.1 ) );
+		        setColor( "stack.tab.background.bottom.focused", Colors.diffMirror( border, 0.1 ) );
+		        setColor( "stack.tab.background.bottom.disabled", Colors.diffMirror( border, 0.1 ) );
+		        setColor( "stack.tab.background.bottom", border );
+		            
+		        setColor( "stack.tab.foreground", DockUI.getColor( LookAndFeelColors.PANEL_FOREGROUND ));
+		    }
+		};
+		dockingFramesControl.putProperty(FlatTheme.FLAT_COLOR_SCHEME, colors);
+		//dockingFramesControl.putProperty(FlatTheme.PAINT_ICONS_WHEN_DESELECTED, false);
+		/*DockUI.registerColors("*", new DefaultLookAndFeelColors() {
+			
+			@Override
+			public void unbind() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public Color getColor(String key) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public void bind() {
+				// TODO Auto-generated method stub
+				
+			}
+		};*/
 
 		LookAndFeelList laflist = LookAndFeelList.getDefaultList();
 
@@ -167,82 +232,78 @@ public class SwingClientGuiStub {
 
 		themes.select(ThemeMap.KEY_FLAT_THEME);
 
-		final ScreenDockStation screen = new ScreenDockStation(this.rootframe);
-		controller.add(screen);
-
-		final ToolbarContainerDockStation north = new ToolbarContainerDockStation(Orientation.HORIZONTAL, 3);
-
-		controller.add(north);
-
-		final ToolbarGroupDockStation group = new ToolbarGroupDockStation();
-
-		this.rootframe.add(north.getComponent(), BorderLayout.NORTH);
-
-		ToolbarDockStation toolbar = new ToolbarDockStation();
-
-		SimpleButtonAction actionPower = new SimpleButtonAction();
-		try {
-			actionPower.setIcon(IconTool.getIconMultiResolution(16, "icons/svg/lnr-power-switch.svg", Color.ORANGE));
-		} catch (IOException | TranscoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			actionPower.setText("Power");
-		}
-		toolbar.drop(new ToolbarItemDockable(actionPower));
-
-		SimpleButtonAction actionUser = new SimpleButtonAction();
-		try {
-			actionUser.setIcon(IconTool.getIconMultiResolution(16, "icons/svg/lnr-user.svg", Color.BLUE));
-		} catch (IOException | TranscoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			actionUser.setText("User");
-		}
-
-		toolbar.drop(new ToolbarItemDockable(actionUser));
-
-		group.drop(toolbar, new ToolbarGroupProperty(0, 0, null));
-
-		ToolbarDockStation toolbar2 = new ToolbarDockStation();
-
-		SimpleButtonAction actionConfig = new SimpleButtonAction();
-		try {
-			actionConfig.setIcon(IconTool.getIconMultiResolution(16, "icons/svg/lnr-cog.svg", Color.GREEN));
-		} catch (IOException | TranscoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			actionConfig.setText("Config");
-		}
-
-		toolbar2.drop(new ToolbarItemDockable(actionConfig));
-
-		group.drop(toolbar2, new ToolbarGroupProperty(1, 0, null));
-
+		JToolBar toolbar = new JToolBar();
 		
-		ToolbarDockStation toolbar3 = new ToolbarDockStation();
+		
+		
 
-		SimpleButtonAction actionHelp = new SimpleButtonAction();
+		Action actionPower = new AbstractAction("Power") {
+			public void actionPerformed(ActionEvent e) {
+				
+			};		
+		};
 		try {
-			actionHelp.setIcon(IconTool.getIconMultiResolution(16, "icons/svg/lnr-question-circle.svg", Color.CYAN));
+			actionPower.putValue(Action.SMALL_ICON, 
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-power-switch.svg", Color.ORANGE));
 		} catch (IOException | TranscoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			actionHelp.setText("Help");
+			actionPower.putValue(Action.SHORT_DESCRIPTION, "Power");
+		}
+		
+		toolbar.add(actionPower);
+		
+
+		Action actionUser = new AbstractAction("User") {
+			public void actionPerformed(ActionEvent e) {
+				
+			};		
+		};
+		try {
+			actionUser.putValue(Action.SMALL_ICON, 
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-user.svg", Color.BLUE));
+		} catch (IOException | TranscoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			actionUser.putValue(Action.SHORT_DESCRIPTION,"User");
 		}
 
-		toolbar3.drop(new ToolbarItemDockable(actionHelp));
+		toolbar.add(actionUser);
 
-		group.drop(toolbar3, new ToolbarGroupProperty(2, 0, null));
+
+		Action actionConfig = new AbstractAction("Config") {
+			public void actionPerformed(ActionEvent e) {
+				
+			};		
+		};
+		try {
+			actionConfig.putValue(Action.SMALL_ICON, 
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-cog.svg", Color.GREEN));
+		} catch (IOException | TranscoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			actionConfig.putValue(Action.SHORT_DESCRIPTION,"Config");
+		}
+
+		toolbar.add(actionConfig);
 		
-		controller.getProperties().set(ExpandableToolbarItemStrategy.STRATEGY,
-				new DefaultExpandableToolbarItemStrategy() {
-					@Override
-					public boolean isEnabled(Dockable item, ExpandedState state) {
-						return false;
-					}
-				});
+		Action actionHelp = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				
+			};		
+		};
+		try {
+			actionHelp.putValue(Action.SMALL_ICON, 
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-question-circle.svg", Color.CYAN));
+		} catch (IOException | TranscoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			actionHelp.putValue(Action.SHORT_DESCRIPTION,"Help");
+		}
 
-		north.drop(group);
+		toolbar.add(actionHelp);		
+
+		this.rootframe.add(toolbar, BorderLayout.NORTH);
 
 		this.rootframe.add(dockingFramesControl.getContentArea(), BorderLayout.CENTER);
 		// control.setTheme(ThemeMap.KEY_FLAT_THEME);
@@ -328,7 +389,6 @@ public class SwingClientGuiStub {
 		this.rootframe.pack();
 		this.rootframe.setBounds(50, 50, 1000, 700);// TODO: get better size calcs
 		this.rootframe.setVisible(true);
-		screen.setShowing(true);
 	}
 
 	private static void initialLayout(CControl control) {
@@ -475,4 +535,26 @@ public class SwingClientGuiStub {
 		return shapeLayer;
 	}
 
+	protected static class Zoom extends AbstractAction { 
+		
+		  double factor;  
+		  
+		  public Zoom(double factor) {  
+		    super("Zoom " + (factor > 1.0 ? "In" : "Out"));
+		    this.factor = factor;  
+		    this.putValue(Action.SHORT_DESCRIPTION,   
+		                  "Zoom " + (factor > 1.0 ? "In" : "Out"));  
+		  }  
+		  
+		  public void actionPerformed(ActionEvent e) {  
+		   /* view.setZoom(view.getZoom() * factor);  
+		    // Adjusts the size of the view's world rectangle. The world rectangle   
+		    // defines the region of the canvas that is accessible by using the   
+		    // scrollbars of the view.  
+		    Rectangle box = view.getGraph2D().getBoundingBox();  
+		    view.setWorldRect(box.x - 20, box.y - 20, box.width + 40, box.height + 40);  
+		    view.updateView();*/  
+		  }  
+		}  
+	
 }
