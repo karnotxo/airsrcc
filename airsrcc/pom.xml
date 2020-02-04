@@ -27,6 +27,7 @@
 		<java.version>11</java.version>
 		<spring-boot.version>${project.parent.version}</spring-boot.version>
 		<net-devh-grpc.version>2.6.2.RELEASE</net-devh-grpc.version>
+		<pf4j.version>3.2.0</pf4j.version>
 	</properties>
 
 

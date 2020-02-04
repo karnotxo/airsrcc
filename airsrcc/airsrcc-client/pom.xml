@@ -108,6 +108,13 @@
 			<version>5.1.15</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.pf4j/pf4j -->
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j</artifactId>
+			<version>${pf4j.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

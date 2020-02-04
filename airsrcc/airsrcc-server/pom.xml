@@ -14,8 +14,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<!-- properties>
-	</properties-->
+	<!-- properties> </properties -->
 
 	<repositories>
 		<repository>
@@ -48,6 +47,13 @@
 		<dependency>
 			<groupId>net.devh</groupId>
 			<artifactId>grpc-server-spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.pf4j/pf4j -->
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j</artifactId>
+			<version>${pf4j.version}</version>
 		</dependency>
 
 		<dependency>
@@ -102,6 +108,5 @@
 		</plugins>
 	</build>
 
-	<!-- dependencyManagement>
-	</dependencyManagement-->
+	<!-- dependencyManagement> </dependencyManagement -->
 </project>
