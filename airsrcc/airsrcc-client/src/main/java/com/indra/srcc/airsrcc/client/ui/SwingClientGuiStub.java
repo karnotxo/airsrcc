@@ -36,7 +36,9 @@ import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.indra.srcc.airsrcc.client.control.SwingClientController;
+import com.indra.srcc.airsrcc.client.ui.bite.BiteDiagram;
 import com.indra.srcc.airsrcc.client.util.IconTool;
+import com.mxgraph.swing.mxGraphComponent;
 
 import bibliothek.extension.gui.dock.theme.FlatTheme;
 import bibliothek.extension.gui.dock.theme.flat.FlatColorScheme;
@@ -79,6 +81,7 @@ public class SwingClientGuiStub {
 	private JComponent messageLog;
 	private JComponent alertsDisplay;
 	private JComponent sitesSelectionTable;
+	private JComponent bitediagram;
 	private JComponent ppimap;
 
 	private JComponent siteControlForm;
@@ -154,75 +157,7 @@ public class SwingClientGuiStub {
 		// controller.getProperties().set( DockTheme.SPAN_FACTORY, new BasicSpanFactory(
 		// 500, 250 ) );
 		dockingFramesControl.setTheme(ThemeMap.KEY_FLAT_THEME);
-		ColorScheme colors = new FlatColorScheme() {
-		    @Override
-		    protected void updateUI(){
-		        setColor( "title.active.left", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ));
-		        setColor( "title.inactive.left", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
-		        setColor( "title.active.right", DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND ) );
-		        setColor( "title.inactive.right", DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND ) );
-		        setColor( "title.active.text", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_FOREGROUND ) );
-		        setColor( "title.inactive.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
-		        
-		        setColor( "title.flap.active", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) );
-		        setColor( "title.flap.active.text", DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_FOREGROUND ) );
-		        setColor( "title.flap.active.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) ) );
-				setColor( "title.flap.active.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_SELECTION_BACKGROUND ) ) );
-		        setColor( "title.flap.inactive", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
-		        setColor( "title.flap.inactive.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
-		        setColor( "title.flap.inactive.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
-				setColor( "title.flap.inactive.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
-		        setColor( "title.flap.selected", DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) );
-		        setColor( "title.flap.selected.text", DockUI.getColor( LookAndFeelColors.TITLE_FOREGROUND ) );
-		        setColor( "title.flap.selected.knob.highlight", Colors.brighter( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
-				setColor( "title.flap.selected.knob.shadow", Colors.darker( DockUI.getColor( LookAndFeelColors.TITLE_BACKGROUND ) ) );
-				
-		        setColor( "paint", Color.DARK_GRAY );
-		        setColor( "paint.insertion.area", Color.WHITE );
-		        setColor( "paint.removal", Color.GRAY );
-		        
-		        Color border = DockUI.getColor( LookAndFeelColors.PANEL_BACKGROUND );
-		        setColor( "stack.tab.border.center.selected", Colors.brighter( border ) );
-		        setColor( "stack.tab.border.center.focused", Colors.brighter( border ) );
-		        setColor( "stack.tab.border.center.disabled", Colors.brighter( border ) );
-		        setColor( "stack.tab.border.center", Colors.darker( border ) );
-		        setColor( "stack.tab.border", border );
-		                        
-		        setColor( "stack.tab.background.top.selected", Colors.diffMirror( border, 0.2 ) );
-		        setColor( "stack.tab.background.top.focused", Colors.diffMirror( border, 0.2 ) );
-		        setColor( "stack.tab.background.top.disabled", Colors.diffMirror( border, 0.1 ) );
-		        setColor( "stack.tab.background.top", border );
-		        setColor( "stack.tab.background.bottom.selected", Colors.diffMirror( border, 0.1 ) );
-		        setColor( "stack.tab.background.bottom.focused", Colors.diffMirror( border, 0.1 ) );
-		        setColor( "stack.tab.background.bottom.disabled", Colors.diffMirror( border, 0.1 ) );
-		        setColor( "stack.tab.background.bottom", border );
-		            
-		        setColor( "stack.tab.foreground", DockUI.getColor( LookAndFeelColors.PANEL_FOREGROUND ));
-		    }
-		};
-		dockingFramesControl.putProperty(FlatTheme.FLAT_COLOR_SCHEME, colors);
-		//dockingFramesControl.putProperty(FlatTheme.PAINT_ICONS_WHEN_DESELECTED, false);
-		/*DockUI.registerColors("*", new DefaultLookAndFeelColors() {
-			
-			@Override
-			public void unbind() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public Color getColor(String key) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public void bind() {
-				// TODO Auto-generated method stub
-				
-			}
-		};*/
-
+		
 		LookAndFeelList laflist = LookAndFeelList.getDefaultList();
 
 		ComponentCollector collector = new DockableCollector(dockingFramesControl.intern());
@@ -313,6 +248,7 @@ public class SwingClientGuiStub {
 		this.alertsDisplay = createAlertsDisplay();
 		this.siteControlForm = createSiteControlForm();
 		this.sitesSelectionTable = createSiteSelectionTable();
+		this.bitediagram = createBiteDiagram();
 		// IMPORTANT: CruiseControl must be the last one to be in front of the others!
 		this.ppimap = createPPIMap();
 
@@ -326,6 +262,8 @@ public class SwingClientGuiStub {
 				"Site Selection", new JScrollPane(this.sitesSelectionTable));
 		DefaultSingleCDockable sitecontrolformdock = new DefaultSingleCDockable("sitecontrolform", "Control",
 				new JScrollPane(this.siteControlForm));
+		DefaultSingleCDockable bitediagramdock = new DefaultSingleCDockable("bitediagram", "BITE",
+				this.bitediagram);
 		DefaultSingleCDockable ppimapdock = new DefaultSingleCDockable("ppimap", "Map View", this.ppimap);
 
 		initMap();
@@ -355,6 +293,8 @@ public class SwingClientGuiStub {
 		alertsdisplaydock.setCloseable(false);
 		messagelogdock.setGrouping(new PlaceholderGrouping(dockingFramesControl, new Path("workspace", "messaging")));
 		messagelogdock.setCloseable(false);
+		bitediagramdock.setGrouping(new PlaceholderGrouping(dockingFramesControl, new Path("workspace", "bite")));
+		bitediagramdock.setCloseable(false);
 
 		// TreeLocationRoot west = CLocation.base().normalWest(0.4);
 
@@ -377,6 +317,7 @@ public class SwingClientGuiStub {
 		dockingFramesControl.addDockable(alertsdisplaydock);
 		dockingFramesControl.addDockable(siteselectiontabledock);
 		dockingFramesControl.addDockable(sitecontrolformdock);
+		dockingFramesControl.addDockable(bitediagramdock);
 		dockingFramesControl.addDockable(ppimapdock);
 
 		displaytreedock.setVisible(true);
@@ -384,6 +325,7 @@ public class SwingClientGuiStub {
 		alertsdisplaydock.setVisible(true);
 		siteselectiontabledock.setVisible(true);
 		sitecontrolformdock.setVisible(true);
+		bitediagramdock.setVisible(true);
 		ppimapdock.setVisible(true);
 
 		this.rootframe.pack();
@@ -426,6 +368,7 @@ public class SwingClientGuiStub {
 		center.gridPlaceholder(4, 2, 1, 2, new Path("workspace", "detail"));
 		center.gridPlaceholder(0, 4, 2, 1, new Path("workspace", "messaging"));
 		center.gridPlaceholder(2, 4, 2, 1, new Path("workspace", "alerts"));
+		center.gridPlaceholder(0, 5, 4, 1, new Path("workspace", "bite"));
 
 		/*
 		 * Finally we tell the CControl that the perspective we just set up should be
@@ -460,10 +403,16 @@ public class SwingClientGuiStub {
 		return new TreeTable();
 	}
 
+	private JComponent createBiteDiagram() {
+
+		return new BiteDiagram().getComponent();
+	}
+	
 	private JComponent createPPIMap() {
 
 		return new BasicMapPanel();
 	}
+
 
 	private JComponent createSiteControlForm() {
 		return new JPanel();

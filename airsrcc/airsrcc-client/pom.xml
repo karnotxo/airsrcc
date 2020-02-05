@@ -20,6 +20,10 @@
 			<id>nuiton-maven-repository</id>
 			<url>http://maven.nuiton.org/release/</url>
 		</repository>
+		<repository>
+			<id>saarland-maven-repository</id>
+			<url>http://titania.fs.uni-saarland.de/nexus/content/repositories/stchair/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -113,6 +117,13 @@
 			<groupId>org.pf4j</groupId>
 			<artifactId>pf4j</artifactId>
 			<version>${pf4j.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.github.vlsi.mxgraph/jgraphx -->
+		<dependency>
+			<groupId>com.github.vlsi.mxgraph</groupId>
+			<artifactId>jgraphx</artifactId>
+			<version>4.0.5</version>
 		</dependency>
 
 	</dependencies>
