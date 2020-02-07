@@ -3,9 +3,8 @@ package com.indra.srcc.airsrcc.client.ui.forms;
 import java.awt.BasicStroke;
 import java.awt.Component;
 import java.awt.Graphics2D;
-import java.awt.geom.Area;
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
+
 import javax.swing.UIManager;
 
 import com.formdev.flatlaf.icons.FlatAbstractIcon;
