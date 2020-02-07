@@ -1,6 +1,7 @@
 package com.indra.srcc.airsrcc.client.ui;
 
 import java.awt.BorderLayout;
+import com.formdev.flatlaf.icons.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -37,7 +38,10 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.indra.srcc.airsrcc.client.control.SwingClientController;
 import com.indra.srcc.airsrcc.client.ui.bite.BiteDiagram;
+import com.indra.srcc.airsrcc.client.ui.forms.FlatInternalFrameExternalizeIcon;
+import com.indra.srcc.airsrcc.client.ui.forms.FlatInternalFrameUnexternalizeIcon;
 import com.indra.srcc.airsrcc.client.util.IconTool;
+import com.l2fprod.common.demo.PropertySheetMain;
 import com.mxgraph.swing.mxGraphComponent;
 
 import bibliothek.extension.gui.dock.theme.FlatTheme;
@@ -149,7 +153,33 @@ public class SwingClientGuiStub {
 
 		this.rootframe.setLayout(new BorderLayout());
 
-		dockingFramesControl = new CControl(this.rootframe);
+		dockingFramesControl = new CControl(this.rootframe);		
+		
+		/*
+		 * locationmanager.normalize = normalize.png 
+		 * locationmanager.maximize = maximize.png 
+		 * locationmanager.minimize = minimize.png
+		 * locationmanager.externalize = externalize.png 
+		 * locationmanager.unexternalize = unexternalize.png 
+		 * locationmanager.unmaximize_externalized = normalize.png
+		 * 
+		 * rename = rename.png 
+		 * replace = replace.png
+		 */
+		
+
+		dockingFramesControl.getController().getIcons().setIconClient("locationmanager.normalize", 
+				new FlatInternalFrameMinimizeIcon());		
+		dockingFramesControl.getController().getIcons().setIconClient("locationmanager.minimize", 
+				new FlatInternalFrameIconifyIcon());
+		dockingFramesControl.getController().getIcons().setIconClient("locationmanager.maximize", 
+				new FlatInternalFrameMaximizeIcon());
+
+		dockingFramesControl.getController().getIcons().setIconClient("locationmanager.externalize", 
+				new FlatInternalFrameExternalizeIcon());
+
+		dockingFramesControl.getController().getIcons().setIconClient("locationmanager.unexternalize", 
+				new FlatInternalFrameUnexternalizeIcon());
 
 		// final DockController controller = new DockController();
 		//final DockController controller = dockingFramesControl.intern().getController();
@@ -179,7 +209,7 @@ public class SwingClientGuiStub {
 		};
 		try {
 			actionPower.putValue(Action.SMALL_ICON, 
-					IconTool.getIconMultiResolution(16, "icons/svg/lnr-power-switch.svg", Color.ORANGE));
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-power-switch.svg", Color.CYAN));
 		} catch (IOException | TranscoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -196,7 +226,7 @@ public class SwingClientGuiStub {
 		};
 		try {
 			actionUser.putValue(Action.SMALL_ICON, 
-					IconTool.getIconMultiResolution(16, "icons/svg/lnr-user.svg", Color.BLUE));
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-user.svg", Color.PINK));
 		} catch (IOException | TranscoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -213,7 +243,7 @@ public class SwingClientGuiStub {
 		};
 		try {
 			actionConfig.putValue(Action.SMALL_ICON, 
-					IconTool.getIconMultiResolution(16, "icons/svg/lnr-cog.svg", Color.GREEN));
+					IconTool.getIconMultiResolution(16, "icons/svg/lnr-cog.svg", Color.WHITE));
 		} catch (IOException | TranscoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -415,7 +445,7 @@ public class SwingClientGuiStub {
 
 
 	private JComponent createSiteControlForm() {
-		return new JPanel();
+		return new PropertySheetMain();
 	}
 
 	private void initMap() {

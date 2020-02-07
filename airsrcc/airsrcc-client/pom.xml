@@ -24,6 +24,10 @@
 			<id>saarland-maven-repository</id>
 			<url>http://titania.fs.uni-saarland.de/nexus/content/repositories/stchair/</url>
 		</repository>
+		<repository>
+			<id>ICM-maven-repository</id>
+			<url>http://maven.icm.edu.pl/artifactory/repo/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -111,6 +115,14 @@
 			<artifactId>openmap</artifactId>
 			<version>5.1.15</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.tros/l2fprod-properties-editor -->
+		<dependency>
+			<groupId>org.tros</groupId>
+			<artifactId>l2fprod-properties-editor</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.pf4j/pf4j -->
 		<dependency>
