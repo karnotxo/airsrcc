@@ -1,19 +1,14 @@
 package com.indra.srcc.airsrcc.client.ui;
 
 import java.awt.BorderLayout;
-import com.formdev.flatlaf.icons.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.Properties;
-import java.util.concurrent.CompletableFuture;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -24,29 +19,18 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.bbn.openmap.LayerHandler;
-import com.bbn.openmap.MapHandler;
-import com.bbn.openmap.MouseDelegator;
-import com.bbn.openmap.MultipleSoloMapComponentException;
-import com.bbn.openmap.PropertyHandler;
-import com.bbn.openmap.event.OMMouseMode;
-import com.bbn.openmap.gui.BasicMapPanel;
-import com.bbn.openmap.layer.GraticuleLayer;
-import com.bbn.openmap.layer.shape.ShapeLayer;
-import com.bbn.openmap.proj.coords.LatLonPoint;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.icons.FlatInternalFrameIconifyIcon;
+import com.formdev.flatlaf.icons.FlatInternalFrameMaximizeIcon;
+import com.formdev.flatlaf.icons.FlatInternalFrameMinimizeIcon;
 import com.indra.srcc.airsrcc.client.control.SwingClientController;
 import com.indra.srcc.airsrcc.client.ui.bite.BiteDiagram;
 import com.indra.srcc.airsrcc.client.ui.forms.FlatInternalFrameExternalizeIcon;
 import com.indra.srcc.airsrcc.client.ui.forms.FlatInternalFrameUnexternalizeIcon;
 import com.indra.srcc.airsrcc.client.util.IconTool;
+import com.indra.srcc.airsrcc.lib.PpiMapProvider;
 import com.l2fprod.common.demo.PropertySheetMain;
-import com.mxgraph.swing.mxGraphComponent;
 
-import bibliothek.extension.gui.dock.theme.FlatTheme;
-import bibliothek.extension.gui.dock.theme.flat.FlatColorScheme;
-import bibliothek.gui.DockUI;
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.DefaultSingleCDockable;
 import bibliothek.gui.dock.common.grouping.PlaceholderGrouping;
@@ -56,15 +40,9 @@ import bibliothek.gui.dock.common.theme.ThemeMap;
 import bibliothek.gui.dock.facile.lookandfeel.DockableCollector;
 import bibliothek.gui.dock.support.lookandfeel.ComponentCollector;
 import bibliothek.gui.dock.support.lookandfeel.LookAndFeelList;
-import bibliothek.gui.dock.themes.ColorScheme;
-import bibliothek.gui.dock.themes.color.DefaultColorScheme;
-import bibliothek.gui.dock.util.laf.LookAndFeelColors;
-import bibliothek.util.Colors;
 import bibliothek.util.Path;
 import de.sciss.treetable.j.TreeTable;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 public class SwingClientGuiStub {
 
@@ -90,6 +68,8 @@ public class SwingClientGuiStub {
 
 	private JComponent siteControlForm;
 	private CControl dockingFramesControl;
+	
+	private PpiMapProvider ppiMapProvider;
 
 	/**
 	 * CONSTRUCTOR
@@ -98,7 +78,9 @@ public class SwingClientGuiStub {
 
 	}
 
-	public void launchGUI() {
+	public void launchGUI(PpiMapProvider ppiMapProvider) {
+		
+		this.ppiMapProvider = ppiMapProvider;
 		
 		FlatDarkLaf.install();
 
@@ -280,7 +262,7 @@ public class SwingClientGuiStub {
 		this.sitesSelectionTable = createSiteSelectionTable();
 		this.bitediagram = createBiteDiagram();
 		// IMPORTANT: CruiseControl must be the last one to be in front of the others!
-		this.ppimap = createPPIMap();
+		this.ppimap = this.ppiMapProvider.createPpiMapComponent();
 
 		DefaultSingleCDockable displaytreedock = new DefaultSingleCDockable("displayTree", "Display Tree",
 				new JScrollPane(this.displayTree));
@@ -296,7 +278,7 @@ public class SwingClientGuiStub {
 				this.bitediagram);
 		DefaultSingleCDockable ppimapdock = new DefaultSingleCDockable("ppimap", "Map View", this.ppimap);
 
-		initMap();
+		this.ppiMapProvider.initPpiMap(rootframe, ppimap);
 
 		/*
 		 * After setting up the JComponents, we mark some locations with placeholders.
@@ -437,81 +419,9 @@ public class SwingClientGuiStub {
 
 		return new BiteDiagram().getComponent();
 	}
-	
-	private JComponent createPPIMap() {
-
-		return new BasicMapPanel();
-	}
-
 
 	private JComponent createSiteControlForm() {
 		return new PropertySheetMain();
-	}
-
-	private void initMap() {
-		try {
-			// Get the default MapHandler the BasicMapPanel created.
-			MapHandler mapHandler = ((BasicMapPanel) this.ppimap).getMapHandler();
-
-			// Add MouseDelegator, which handles mouse modes (managing mouse
-			// events)
-			mapHandler.add(new MouseDelegator());
-			// Add OMMouseMode, which handles how the map reacts to mouse
-			// movements
-			mapHandler.add(new OMMouseMode());
-
-			// Set the map's center
-			((BasicMapPanel) this.ppimap).getMapBean().setCenter(new LatLonPoint.Double(40.416775, -3.703790));
-			// Set the map's scale 1:12 million
-			((BasicMapPanel) this.ppimap).getMapBean().setScale(12000000f);
-			/*
-			 * Create and add a LayerHandler to the MapHandler. The LayerHandler manages
-			 * Layers, whether they are part of the map or not. layer.setVisible(true) will
-			 * add it to the map. The LayerHandler has methods to do this, too. The
-			 * LayerHandler will find the MapBean in the MapHandler.
-			 */
-			mapHandler.add(new LayerHandler());
-			CompletableFuture.supplyAsync(() -> getShapeLayer()).thenAcceptAsync(shapeLayer -> {
-				// Add the political layer to the map
-				mapHandler.add(shapeLayer);
-				mapHandler.add(new GraticuleLayer());
-				this.rootframe.revalidate();
-			});
-
-			// Add the map to the frame
-			// mapHandler.add(this.rootframe);
-		} catch (MultipleSoloMapComponentException msmce) {
-			// The MapHandler is only allowed to have one of certain
-			// items. These items implement the SoloMapComponent
-			// interface. The MapHandler can have a policy that
-			// determines what to do when duplicate instances of the
-			// same type of object are added - replace or ignore.
-
-			// In this example, this will never happen, since we are
-			// controlling that one MapBean, LayerHandler,
-			// MouseDelegator, etc is being added to the MapHandler.
-		}
-	}
-
-	private ShapeLayer getShapeLayer() {
-		PropertyHandler propertyHandler = null;
-		final Properties p = new Properties();
-		try {
-			p.load(new StringReader("shapePolitical.prettyName=Political Solid\n" + "shapePolitical.lineColor=000000\n"
-					+ "shapePolitical.fillColor=BDDE83\n" + "shapePolitical.shapeFile=map/shape/europe.shp\n"));
-			// + "shapePolitical.spatialIndex=map/shape/europe.prj\n"));
-			propertyHandler = new PropertyHandler.Builder().setProperties(p).setPropertyPrefix("shapePolitical")
-					.build();
-		} catch (IOException ex) {
-			log.error(null, ex);
-		}
-		// ShapeLayer:
-		ShapeLayer shapeLayer = new ShapeLayer();
-		if (propertyHandler != null) {
-			shapeLayer.setProperties(propertyHandler.getPropertyPrefix(),
-					propertyHandler.getProperties(propertyHandler.getPropertyPrefix()));
-		}
-		return shapeLayer;
 	}
 
 	protected static class Zoom extends AbstractAction { 

@@ -29,16 +29,18 @@ public class FlatInternalFrameExternalizeIcon
 	@Override
 	protected void paintIcon( Component c, Graphics2D g ) {
 
-		g.fill( FlatUIUtils.createRectangle( 6, 6, 8, 8, 1 ) );
+
+		Path2D path = FlatUIUtils.createPath( false, 4, 4, 13, 4, 13, 13 );
+		g.setStroke( new BasicStroke( 1f ) );
+		g.draw( path );
+
+		path = FlatUIUtils.createPath( false, 6,7, 10,7, 10,11 );
 		
-		if( chevron ) {
-			// chevron arrow
-			Path2D path = FlatUIUtils.createPath( false, 1,5, 5,1, 9,5 );
-			g.setStroke( new BasicStroke( 1f ) );
-			g.draw( path );
-		} else {
-			// triangle arrow
-			g.fill( FlatUIUtils.createPath( 0.5,5, 5,0, 9.5,5 ) );
-		}
+		g.draw( path );
+		
+		path = FlatUIUtils.createPath( false, 5,12, 10,7 );
+		
+		g.draw( path );
+		
 	}
 }

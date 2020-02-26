@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.indra.srcc</groupId>
+    <artifactId>airsrcc</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>airsrcc-openmap</artifactId>
+  <name>AirSRCC-OpenMap</name>
+  <description>AirSRCC OpenMap Wrapper Module</description>
+  <packaging>jar</packaging>
+  
+  <repositories>
+		<repository>
+			<id>nuiton-maven-repository</id>
+			<url>http://maven.nuiton.org/release/</url>
+		</repository>
+		<repository>
+			<id>saarland-maven-repository</id>
+			<url>http://titania.fs.uni-saarland.de/nexus/content/repositories/stchair/</url>
+		</repository>
+		<repository>
+			<id>ICM-maven-repository</id>
+			<url>http://maven.icm.edu.pl/artifactory/repo/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.indra.srcc</groupId>
+			<artifactId>airsrcc-lib</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.pf4j</groupId>
+			<artifactId>pf4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.bbn/openmap -->
+		<dependency>
+			<groupId>com.bbn</groupId>
+			<artifactId>openmap</artifactId>
+			<version>5.1.15</version>
+		</dependency>
+	</dependencies>
+</project>
